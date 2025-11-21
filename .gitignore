@@ -4,5 +4,7 @@ anime/.venv/*
 anime/__pycache__/*
 anime/app/__pycache__/*
 anime/app/db/__pycache__/*
+anime/app/routers/__pycache__/*
+
 
 anime/sql_app_test.db
