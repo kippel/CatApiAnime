@@ -5,22 +5,20 @@ from app.db.deps import (
 )
 from app.schemas import AnimeBase
 from app.db.models import Anime, FilmEnum, TipusEnum
+from typing import Optional
+
 
 router = APIRouter(prefix="/crud", tags=["crud"])
 
 @router.post("/create")
 async def create(
     titol: str = Form(...),
-    tipus: TipusEnum= Form(...),
+    tipus: TipusEnum = Form(...),
     sinopsi: str = Form(""),
-    episodis: int = Form(""),
-    sortida_dia: int = Form(""),
-    sortida_mes: int = Form(""),
-    sortida_any: int = Form(""),
-    final_dia: int = Form(""),
-    final_mes: int = Form(""),
-    final_any: int = Form(""),
-    film: FilmEnum= Form(""),
+    episodis: Optional[int] = Form(None),
+    sortida_date: str = Form(""),
+    final_date: str = Form(""),
+    film: Optional[FilmEnum] = Form(None),
     db: db_dependency = Annotated # type: ignore
 ):
     
@@ -28,12 +26,8 @@ async def create(
         titol=titol, 
         sinopsi=sinopsi,
         episodis=episodis,
-        sortida_dia=sortida_dia,
-        sortida_mes=sortida_mes,
-        sortida_any=sortida_any,
-        final_dia=final_dia,
-        final_mes=final_mes,
-        final_any=final_any,
+        sortida_date=sortida_date,
+        final_date=final_date,
         film=film,
         tipus=tipus
     )
@@ -43,3 +37,4 @@ async def create(
     db.refresh(anime_data)
 
     return {"msg": anime_data}
+

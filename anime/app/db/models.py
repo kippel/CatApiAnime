@@ -29,12 +29,8 @@ class Anime(Base):
     titol: Mapped[str] = mapped_column(String, unique=True, index=True)
     sinopsi: Mapped[str] = mapped_column(String)
     episodis: Mapped[int] = mapped_column(Integer)
-    sortida_dia: Mapped[int] = mapped_column(Integer)
-    sortida_mes: Mapped[int] = mapped_column(Integer)
-    sortida_any: Mapped[int] = mapped_column(Integer)
-    final_dia: Mapped[int] = mapped_column(Integer)
-    final_mes: Mapped[int] = mapped_column(Integer)
-    final_any: Mapped[int] = mapped_column(Integer)
+    sortida_date: Mapped[str] = mapped_column(String)
+    final_date: Mapped[str] = mapped_column(String)
     film: Mapped[FilmEnum] = mapped_column(Enum(FilmEnum))
     tipus: Mapped[TipusEnum] = mapped_column(Enum(TipusEnum))
     anime_dates: Mapped[list["AnimeDate"]] = relationship("AnimeDate", back_populates="anime")
@@ -42,9 +38,7 @@ class Anime(Base):
 class AnimeDate(Base):
     __tablename__ = "anime_dates"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    dia: Mapped[int] = mapped_column(Integer)
-    mes: Mapped[int] = mapped_column(Integer)
-    any: Mapped[int] = mapped_column(Integer)
+    date: Mapped[str] = mapped_column(String)
     anime_id: Mapped[int] = mapped_column(ForeignKey("animes.id"))  
     anime: Mapped["Anime"] = relationship("Anime", backref=backref("dates", cascade="all, delete-orphan"))
 
@@ -61,12 +55,8 @@ class Nom(Base):
     __tablename__ = "noms"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     nom: Mapped[str] = mapped_column(String)
-    sortida_dia: Mapped[int] = mapped_column(Integer)
-    sortida_mes: Mapped[int] = mapped_column(Integer)
-    sortida_any: Mapped[int] = mapped_column(Integer)
-    final_dia: Mapped[int] = mapped_column(Integer)
-    final_mes: Mapped[int] = mapped_column(Integer)
-    final_any: Mapped[int] = mapped_column(Integer)
+    sortida_date: Mapped[str] = mapped_column(String)
+    final_date: Mapped[str] = mapped_column(String)
     nom_animes: Mapped[list["NomAnime"]] = relationship("NomAnime", back_populates="nom")
     
     
