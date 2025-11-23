@@ -5,6 +5,11 @@
 anime$ uv run fastapi dev app/main.py --host 0.0.0.0 --port 4000
 
 anime$ uv run pytest -v
+
+docker compose up --build
+
+docker compose exec anime uv run pytest -v
+
 ```
 
 

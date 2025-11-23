@@ -8,3 +8,12 @@ def test_client():
     with TestClient(app) as client:
         yield client
 
+from app.db.database import SessionLocal
+
+@pytest.fixture
+def db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

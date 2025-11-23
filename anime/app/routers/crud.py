@@ -36,5 +36,5 @@ async def create(
     db.commit()
     db.refresh(anime_data)
 
-    return {"msg": anime_data}
+    return anime_data
 
