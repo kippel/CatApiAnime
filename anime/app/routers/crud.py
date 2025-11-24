@@ -10,24 +10,29 @@ from typing import Optional
 
 router = APIRouter(prefix="/crud", tags=["crud"])
 
+'''
+{
+  "titol": "Bola de drac",
+  "sinopsi": "",
+  "primer_episodi": "26-02-1986",
+  "film": "MANGA",
+  "tipus": "SERIE",
+}
+'''
 @router.post("/create")
 async def create(
     titol: str = Form(...),
-    tipus: TipusEnum = Form(...),
     sinopsi: str = Form(""),
-    episodis: Optional[int] = Form(None),
-    sortida_date: str = Form(""),
-    final_date: str = Form(""),
+    primer_episodi: str = Form(""),
     film: Optional[FilmEnum] = Form(None),
+    tipus: Optional[TipusEnum] = Form(None),
     db: db_dependency = Annotated # type: ignore
 ):
     
     anime_data = Anime(
         titol=titol, 
         sinopsi=sinopsi,
-        episodis=episodis,
-        sortida_date=sortida_date,
-        final_date=final_date,
+        primer_episodi=primer_episodi,
         film=film,
         tipus=tipus
     )

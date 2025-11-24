@@ -13,6 +13,33 @@ docker compose exec anime uv run pytest -v
 ```
 
 
+Gènere	manga i anime d'aventures Modifica el valor a Wikidata
+Director	Hiroshi Saito Modifica el valor a Wikidata
+Productor	Nippon Animation Modifica el valor a Wikidata
+Companyia productora	Nippon Animation Modifica el valor a Wikidata
+País	Japó Modifica el valor a Wikidata
+Llengua original	japonès Modifica el valor a Wikidata
+Canal original	TV Asahi Modifica el valor a Wikidata
+Durada dels capítols	25 min Modifica el valor a Wikidata
+Primer episodi	1r abril 1975 Modifica el valor a Wikidata
+Últim episodi	20 abril 1976 Modifica el valor a Wikidata
+Temporades	2 Modifica el valor a Wikidata
+Episodis	104 Modifica el valor a Wikidata
+Llista d'episodis	llista d'episodis de l'abella Maia
+
+# AnimeSeries
+
+{
+  "durada_dels_capiols" : "25 min",
+  "primer_episodi : "1r abril 1975",
+  "ultim_episodi : "20 abril 1976",
+  "temporades" : 2,
+  "episodis : 104,
+}
+
+
+
+
 { 
     "id" : ,
     "titol": ,
