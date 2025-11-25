@@ -59,14 +59,11 @@ class AnimeSerie(Base):
     __tablename__ = "anime_series"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     durada_dels_capitols: Mapped[str]   = mapped_column(String) 
-    ultim_episodi: Mapped[str] = mapped_column(String)
+    ultim_episodis: Mapped[str] = mapped_column(String)
     temporades: Mapped[int] = mapped_column(Integer)
     episodis: Mapped[int] = mapped_column(Integer)
     anime_id: Mapped[int] = mapped_column(ForeignKey("animes.id"))
     anime: Mapped["Anime"] = relationship("Anime", back_populates="anime_series")
-
-
-
 
 
 #########################################################################
