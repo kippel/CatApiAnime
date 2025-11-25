@@ -26,6 +26,7 @@ async def create(
     primer_episodi: str = Form(""),
     film: Optional[FilmEnum] = Form(None),
     tipus: Optional[TipusEnum] = Form(None),
+    pais: Optional[str] = Form(None),
     db: db_dependency = Annotated # type: ignore
 ):
     
