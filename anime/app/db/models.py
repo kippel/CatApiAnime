@@ -43,7 +43,8 @@ class Anime(Base):
     anime_directors: Mapped[list["AnimeDirector"]] = relationship("AnimeDirector", back_populates="anime")
     anime_genres: Mapped[list["AnimeGeneres"]] = relationship("AnimeGeneres", back_populates="anime")
     anime_series: Mapped[list["AnimeSerie"]] = relationship("AnimeSerie", back_populates="anime")
-    anime_pais: Mapped[list["AnimePais"]] = relationship("AnimePais", back_populates="anime")
+    anime_mangas: Mapped[list["AnimeManga"]] = relationship("AnimeManga", back_populates="anime")   
+    
 
 
 """
@@ -153,15 +154,9 @@ class AnimeManga(Base):
 #########################################################################
 
 class Pais(Base):
-    __tablename__ = "pais"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    pais: Mapped[str] = mapped_column(String)
-    anime_pais: Mapped[list["AnimePais"]] = relationship("AnimePais", back_populates="pais")
-
-class AnimePais(Base):
     __tablename__ = "anime_pais"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    pais: Mapped[str] = mapped_column(String)   
     anime_id: Mapped[int] = mapped_column(ForeignKey("animes.id"))
-    pais_id: Mapped[int] = mapped_column(ForeignKey("pais.id"))
-    anime: Mapped["Anime"] = relationship("Anime", backref=backref("pais", cascade="all, delete-orphan"))
-    pais: Mapped["Pais"] = relationship("Pais", backref=backref("animes", cascade="all, delete-orphan"))
+
+    

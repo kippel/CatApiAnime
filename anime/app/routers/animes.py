@@ -3,7 +3,8 @@ from app.db.deps import (
     db_dependency,
     Annotated
 )   
-from app.db.models import Anime, AnimeSerie, Pais, AnimePais
+from app.db.models import Anime, AnimeSerie, Pais
+from app.world.crud_anime import UpdateAnime
 
 router = APIRouter(prefix="/animes", tags=["animes"])
 
@@ -21,33 +22,19 @@ async def get_animes(db: db_dependency):
 @router.get("/{id}")
 async def get_anime(db: db_dependency, id: int):
 
-    db_anime = db.query(Anime).filter(Anime.id == id).first()
+    anime_data = UpdateAnime(db, id)
+    anime_dev = anime_data.update_anime()
+    pais_dev = anime_data.update_pais()
 
-    
-
-    # Convert to dict to avoid modifying the SQLAlchemy instance
     anime_dict = {
-        "id": db_anime.id,
-        "titol": db_anime.titol,
-        "sinopsi": db_anime.sinopsi,
-        "primer_episodi": db_anime.primer_episodi,
-        "film": db_anime.film,
-        "tipus": db_anime.tipus,
-        "series": [],
-        "pais": []
-        
+        "id": anime_dev.id,
+        "titol": anime_dev.titol,
+        "sinopsi": anime_dev.sinopsi,
+        "primer_episodi": anime_dev.primer_episodi,
+        "film": anime_dev.film,
+        "tipus": anime_dev.tipus,
+        "pais": pais_dev
     }
 
-    db_series = db.query(AnimeSerie).filter(AnimeSerie.anime_id == id).first()
-    if db_series:
-        anime_dict["series"] = db_series
-
-
-    db_anime_pais = db.query(AnimePais).filter(AnimePais.anime_id == id).all()
-    
-    for anime_pais in db_anime_pais:
-        pais_dev = db.query(Pais).filter(Pais.id == anime_pais.pais_id).first()
-        if pais_dev:
-            anime_dict["pais"].append(pais_dev.pais)
 
     return anime_dict

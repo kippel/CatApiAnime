@@ -4,9 +4,9 @@ from app.db.deps import (
     Annotated
 )
 from app.schemas import AnimeBase
-from app.db.models import Anime, FilmEnum, TipusEnum, AnimeSerie, Pais, AnimePais
+from app.db.models import Anime, FilmEnum, TipusEnum, AnimeSerie, Pais
 from typing import Optional
-
+from app.world.crud_anime import CrudAnime
 
 router = APIRouter(prefix="/crud", tags=["crud"])
 
@@ -26,23 +26,35 @@ async def create(
     primer_episodi: str = Form(""),
     film: Optional[FilmEnum] = Form(None),
     tipus: Optional[TipusEnum] = Form(None),
-    pais: Optional[str] = Form(None),
+    pais: Optional[str] = Form(""),
     db: db_dependency = Annotated # type: ignore
 ):
     
-    anime_data = Anime(
-        titol=titol, 
+
+    anime_data = CrudAnime(db)
+    animes_dev = anime_data.create_anime(
+        titol=titol,
         sinopsi=sinopsi,
         primer_episodi=primer_episodi,
         film=film,
         tipus=tipus
     )
+    pais_dev = anime_data.create_pais(pais=pais)
 
-    db.add(anime_data)
-    db.commit()
-    db.refresh(anime_data)
+    print(pais_dev)
+    print(animes_dev)
 
-    return anime_data
+    anime_run = {
+        "id": animes_dev.id,
+        "titol": animes_dev.titol,
+        "sinopsi": animes_dev.sinopsi,
+        "primer_episodi": animes_dev.primer_episodi,
+        "film": animes_dev.film,
+        "tipus": animes_dev.tipus,
+        "pais": pais_dev
+    }
+
+    return anime_run
 
 
 """
@@ -77,39 +89,7 @@ async def create_id(
 
     return anime_data
 
-'''
-{
-    "pais": "Japones",
-}
-'''     
-@router.post("/pais")
-async def pais(
-    pais: str = Form(...),
-    db: db_dependency = Annotated # type: ignore
-):
-    db_pais = Pais(
-        pais=pais
-    )
-    db.add(db_pais)
-    db.commit()
-    db.refresh(db_pais)
-    return db_pais    
 
 
-@router.post("/anime/pais")
-async def animepais(
-    anime_id: int,  
-    pais_id: int,
-    db: db_dependency = Annotated # type: ignore
-):
-    animepais_data = AnimePais(
-        anime_id=anime_id,
-        pais_id=pais_id
-    )
-    db.add(animepais_data)
-    db.commit()
-    db.refresh(animepais_data)
-    return animepais_data
-    
 
     
