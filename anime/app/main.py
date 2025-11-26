@@ -4,6 +4,8 @@ from app.db.deps import db_dependency
 
 from app.routers import crud, animes
 
+from app.config import TEST_CRUD
+
 app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
@@ -20,8 +22,9 @@ api_router = APIRouter(prefix="/api")
 
 # Incloem els routers de cada mòdul
 
-api_router.include_router(crud.router)
+if TEST_CRUD:
+    api_router.include_router(crud.router)
+
 api_router.include_router(animes.router)
-    
 
 app.include_router(api_router)
