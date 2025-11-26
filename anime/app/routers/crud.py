@@ -29,6 +29,8 @@ async def create(
     pais: Optional[str] = Form(""),
     director: Optional[str] = Form(""),
     date: Optional[str] = Form(""),    
+    generes: Optional[str] = Form(""),
+    paraula: Optional[str] = Form(""),
     db: db_dependency = Annotated # type: ignore
 ):
     
@@ -44,7 +46,8 @@ async def create(
     pais_dev = anime_data.create_pais(pais=pais)
     director_dev = anime_data.create_director(director=director)
     date_dev = anime_data.create_date(date=date)
-   
+    generes_dev = anime_data.create_generes(generes=generes)
+    paraula_dev = anime_data.create_paraula(paraula=paraula)
 
     anime_run = {
         "id": animes_dev.id,
@@ -55,7 +58,9 @@ async def create(
         "tipus": animes_dev.tipus,
         "pais": pais_dev,
         "director": director_dev,
-        "date" : date_dev
+        "date" : date_dev,
+        "generes" : generes_dev,
+        "paraula" : paraula_dev
     }
 
     return anime_run

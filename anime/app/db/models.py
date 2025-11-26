@@ -43,7 +43,8 @@ class Anime(Base):
     anime_directors: Mapped[list["AnimeDirector"]] = relationship("AnimeDirector", back_populates="anime")
     anime_genres: Mapped[list["AnimeGeneres"]] = relationship("AnimeGeneres", back_populates="anime")
     anime_series: Mapped[list["AnimeSerie"]] = relationship("AnimeSerie", back_populates="anime")
-    anime_mangas: Mapped[list["AnimeManga"]] = relationship("AnimeManga", back_populates="anime")   
+    anime_paraula: Mapped[list["AnimeParaula"]] = relationship("AnimeParaula", back_populates="anime")
+    
     
 
 
@@ -92,24 +93,7 @@ class AnimeDate(Base):
     anime: Mapped["Anime"] = relationship("Anime", backref=backref("dates", cascade="all, delete-orphan"))
 
 #########################################################################
-class NomAnime(Base):
-    __tablename__ = "nom_animes"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    nom_id: Mapped[int] = mapped_column(ForeignKey("noms.id"))
-    anime_id: Mapped[int] = mapped_column(ForeignKey("animes.id"))
-    nom: Mapped["Nom"] = relationship("Nom", backref=backref("animes", cascade="all, delete-orphan"))
-    anime: Mapped["Anime"] = relationship("Anime", backref=backref("noms", cascade="all, delete-orphan"))
 
-
-class Nom(Base):
-    __tablename__ = "noms"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    nom: Mapped[str] = mapped_column(String)
-    sortida_date: Mapped[str] = mapped_column(String)
-    final_date: Mapped[str] = mapped_column(String)
-    nom_animes: Mapped[list["NomAnime"]] = relationship("NomAnime", back_populates="nom")
-    
-#########################################################################
 class Generes(Base):
     __tablename__ = "genres"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
@@ -128,29 +112,20 @@ class AnimeGeneres(Base):
 
 ## paraula
 
-class Manga(Base):
-    __tablename__ = "mangas"
+class Paraula(Base):
+    __tablename__ = "paraula"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    noms_mangas: Mapped[str] = mapped_column(String)
-    anime_mangas: Mapped[list["AnimeManga"]] = relationship("AnimeManga", back_populates="manga")
+    paraula: Mapped[str] = mapped_column(String)
+    anime_paraula: Mapped[list["AnimeParaula"]] = relationship("AnimeParaula", back_populates="paraula")
 
-class MangaGeneres(Base):
-    __tablename__ = "manga_genres"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    manga_id: Mapped[int] = mapped_column(ForeignKey("mangas.id"))
-    genre_id: Mapped[int] = mapped_column(ForeignKey("genres.id"))
-    manga: Mapped["Manga"] = relationship("Manga", backref=backref("genres", cascade="all, delete-orphan"))
-    genre: Mapped["Generes"] = relationship("Generes", backref=backref("mangas", cascade="all, delete-orphan"))
-    
-#########################################################################
-
-class AnimeManga(Base):
-    __tablename__ = "anime_mangas"
+class AnimeParaula(Base):
+    __tablename__ = "anime_paraula"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     anime_id: Mapped[int] = mapped_column(ForeignKey("animes.id"))
-    manga_id: Mapped[int] = mapped_column(ForeignKey("mangas.id"))
-    anime: Mapped["Anime"] = relationship("Anime", backref=backref("mangas", cascade="all, delete-orphan"))
-    manga: Mapped["Manga"] = relationship("Manga", back_populates="anime_mangas")
+    paraula_id: Mapped[int] = mapped_column(ForeignKey("paraula.id"))
+    anime: Mapped["Anime"] = relationship("Anime", backref=backref("paraula", cascade="all, delete-orphan"))
+    paraula: Mapped["Paraula"] = relationship("Paraula", backref=backref("animes", cascade="all, delete-orphan"))
+   
 
 #########################################################################
 

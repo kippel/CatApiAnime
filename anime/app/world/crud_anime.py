@@ -1,4 +1,14 @@
-from app.db.models import Anime, Pais, Director, AnimeDirector, AnimeDate
+from app.db.models import (
+    Anime, 
+    Pais, 
+    Director, 
+    AnimeDirector, 
+    AnimeDate, 
+    Generes, 
+    AnimeGeneres,
+    Paraula,
+    AnimeParaula
+)
 
 
 class CrudAnime:
@@ -97,6 +107,8 @@ class CrudAnime:
 
     def create_date(self,date: str):
         date_data_list = []
+        if date == "":
+            return date_data_list
         
         for date in date.split(","):
             date_dev = ' '.join(date.split())
@@ -110,6 +122,64 @@ class CrudAnime:
             date_data_list.append(date_dev)
         
         return date_data_list
+    
+    def create_generes(self,generes: str):
+        generes_data_list = []
+        
+        for generes in generes.split(","):
+            generes_dev = ' '.join(generes.split())
+            generes_data_dev = self.db.query(Generes).filter(Generes.generes == generes_dev).first()
+            if generes_data_dev is None:
+                generes_data = Generes(
+                    generes=generes_dev
+                )
+                self.db.add(generes_data)
+                self.db.commit()
+                self.db.refresh(generes_data)
+
+                generes_data_dev = self.db.query(Generes).filter(Generes.generes == generes_dev).first()
+            
+            anime_generes_data = AnimeGeneres(
+                anime_id=self.id,
+                genre_id=generes_data_dev.id
+            )
+            self.db.add(anime_generes_data)
+            self.db.commit()
+            self.db.refresh(anime_generes_data)
+            generes_data_list.append(generes_data_dev.generes)
+        
+        return generes_data_list
+
+    def create_paraula(self,paraula: str):
+        paraula_data_list = []
+        if paraula == "":
+            return paraula_data_list
+        
+        for paraula in paraula.split(","):
+            paraula_dev = ' '.join(paraula.split())
+            paraula_data_dev = self.db.query(Paraula).filter(Paraula.paraula == paraula_dev).first()
+            if paraula_data_dev is None:
+                paraula_data = Paraula(
+                    paraula=paraula_dev
+                )
+                self.db.add(paraula_data)
+                self.db.commit()
+                self.db.refresh(paraula_data)
+
+                paraula_data_dev = self.db.query(Paraula).filter(Paraula.paraula == paraula_dev).first()
+            
+            anime_paraula_data = AnimeParaula(
+                anime_id=self.id,
+                paraula_id=paraula_data_dev.id
+            )
+            self.db.add(anime_paraula_data)
+            self.db.commit()
+            self.db.refresh(anime_paraula_data)
+            paraula_data_list.append(paraula_data_dev.paraula)
+        
+        return paraula_data_list
+
+    
 
         
 
@@ -153,3 +223,27 @@ class UpdateAnime:
         anime_date_data_list = [anime_date_data.date for anime_date_data in anime_date_data]
 
         return anime_date_data_list
+
+    def update_generes(self) -> Anime:
+        anime_generes_data = self.db.query(AnimeGeneres).filter(AnimeGeneres.anime_id == self.id).all()
+
+        anime_generes_data_list = []
+
+        for anime_generes_data in anime_generes_data:
+
+            generes_data = self.db.query(Generes).filter(Generes.id == anime_generes_data.genre_id).first()
+            anime_generes_data_list.append(generes_data.generes)
+        
+        return anime_generes_data_list
+    
+    def update_paraula(self) -> Anime:
+        anime_paraula_data = self.db.query(AnimeParaula).filter(AnimeParaula.anime_id == self.id).all()
+
+        anime_paraula_data_list = []
+
+        for anime_paraula_data in anime_paraula_data:
+
+            paraula_data = self.db.query(Paraula).filter(Paraula.id == anime_paraula_data.paraula_id).first()
+            anime_paraula_data_list.append(paraula_data.paraula)
+        
+        return anime_paraula_data_list
