@@ -37,7 +37,14 @@ class CrudAnime:
 
     def create_pais(self,pais: str):
 
+
+
         pais_data_list = []
+
+        if pais == "":
+            return pais_data_list
+        
+
         for pais in pais.split(","):
 
             pais_dev = ' '.join(pais.split())
@@ -46,7 +53,7 @@ class CrudAnime:
                 anime_id=self.id,
                 pais=pais_dev
             )
-            pais_data_list.append(pais)
+            pais_data_list.append(pais_dev)
             self.db.add(pais_data)
             self.db.commit()
             self.db.refresh(pais_data)
@@ -60,7 +67,10 @@ class CrudAnime:
         return pais_data_dev_list
 
     def create_director(self,director: str):
-      
+        director_data_list = []
+        if director == "":
+            return director_data_list
+            
         for director in director.split(","):
             director_dev = ' '.join(director.split())
             director_data_dev = self.db.query(Director).filter(Director.nom == director_dev).first()
@@ -81,12 +91,9 @@ class CrudAnime:
             self.db.add(anime_director_data)
             self.db.commit()
             self.db.refresh(anime_director_data)
-
-        anime_director_data_dev = self.db.query(AnimeDirector).filter(AnimeDirector.anime_id == self.id).all()
+            director_data_list.append(director_data_dev.nom)
         
-        anime_director_data_dev_list = [anime_director_data.director_id for anime_director_data in anime_director_data_dev]
-        
-        return anime_director_data_dev_list
+        return director_data_list
 
         
 

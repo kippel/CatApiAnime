@@ -43,8 +43,7 @@ async def create(
     pais_dev = anime_data.create_pais(pais=pais)
     director_dev = anime_data.create_director(director=director)
 
-    print(pais_dev)
-    print(animes_dev)
+   
 
     anime_run = {
         "id": animes_dev.id,

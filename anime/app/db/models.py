@@ -37,7 +37,7 @@ class Anime(Base):
     titol: Mapped[str] = mapped_column(String, unique=True, index=True)
     sinopsi: Mapped[str] = mapped_column(String)
     primer_episodi: Mapped[str] = mapped_column(String)
-    film: Mapped[FilmEnum] = mapped_column(Enum(FilmEnum))
+    film: Mapped[ FilmEnum] = mapped_column(Enum(FilmEnum))
     tipus: Mapped[TipusEnum] = mapped_column(Enum(TipusEnum))
     anime_dates: Mapped[list["AnimeDate"]] = relationship("AnimeDate", back_populates="anime")
     anime_directors: Mapped[list["AnimeDirector"]] = relationship("AnimeDirector", back_populates="anime")
@@ -91,6 +91,7 @@ class AnimeDate(Base):
     anime_id: Mapped[int] = mapped_column(ForeignKey("animes.id"))  
     anime: Mapped["Anime"] = relationship("Anime", backref=backref("dates", cascade="all, delete-orphan"))
 
+#########################################################################
 class NomAnime(Base):
     __tablename__ = "nom_animes"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
@@ -99,7 +100,7 @@ class NomAnime(Base):
     nom: Mapped["Nom"] = relationship("Nom", backref=backref("animes", cascade="all, delete-orphan"))
     anime: Mapped["Anime"] = relationship("Anime", backref=backref("noms", cascade="all, delete-orphan"))
 
-#########################################################################
+
 class Nom(Base):
     __tablename__ = "noms"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
@@ -125,6 +126,8 @@ class AnimeGeneres(Base):
 
 #########################################################################
 
+## paraula
+
 class Manga(Base):
     __tablename__ = "mangas"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
@@ -139,8 +142,6 @@ class MangaGeneres(Base):
     manga: Mapped["Manga"] = relationship("Manga", backref=backref("genres", cascade="all, delete-orphan"))
     genre: Mapped["Generes"] = relationship("Generes", backref=backref("mangas", cascade="all, delete-orphan"))
     
-#########################################################################
-
 #########################################################################
 
 class AnimeManga(Base):
