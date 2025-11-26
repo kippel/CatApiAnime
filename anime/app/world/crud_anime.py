@@ -1,4 +1,4 @@
-from app.db.models import Anime, Pais, Director, AnimeDirector
+from app.db.models import Anime, Pais, Director, AnimeDirector, AnimeDate
 
 
 class CrudAnime:
@@ -95,6 +95,22 @@ class CrudAnime:
         
         return director_data_list
 
+    def create_date(self,date: str):
+        date_data_list = []
+        
+        for date in date.split(","):
+            date_dev = ' '.join(date.split())
+            anime_date_data = AnimeDate(
+                anime_id=self.id,
+                date=date_dev
+            )
+            self.db.add(anime_date_data)
+            self.db.commit()
+            self.db.refresh(anime_date_data)
+            date_data_list.append(date_dev)
+        
+        return date_data_list
+
         
 
 class UpdateAnime:
@@ -130,3 +146,10 @@ class UpdateAnime:
             anime_director_data_list.append(director_data.nom)
         
         return anime_director_data_list
+
+    def update_date(self) -> Anime:
+        anime_date_data = self.db.query(AnimeDate).filter(AnimeDate.anime_id == self.id).all()
+
+        anime_date_data_list = [anime_date_data.date for anime_date_data in anime_date_data]
+
+        return anime_date_data_list

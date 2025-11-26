@@ -4,7 +4,7 @@ from app.db.deps import (
     Annotated
 )
 from app.schemas import AnimeBase
-from app.db.models import Anime, FilmEnum, TipusEnum, AnimeSerie, Pais
+from app.db.models import Anime, FilmEnum, TipusEnum, AnimeSerie, Pais, AnimeDate
 from typing import Optional
 from app.world.crud_anime import CrudAnime
 
@@ -28,6 +28,7 @@ async def create(
     tipus: Optional[TipusEnum] = Form(None),
     pais: Optional[str] = Form(""),
     director: Optional[str] = Form(""),
+    date: Optional[str] = Form(""),    
     db: db_dependency = Annotated # type: ignore
 ):
     
@@ -42,7 +43,7 @@ async def create(
     )
     pais_dev = anime_data.create_pais(pais=pais)
     director_dev = anime_data.create_director(director=director)
-
+    date_dev = anime_data.create_date(date=date)
    
 
     anime_run = {
@@ -53,7 +54,8 @@ async def create(
         "film": animes_dev.film,
         "tipus": animes_dev.tipus,
         "pais": pais_dev,
-        "director": director_dev
+        "director": director_dev,
+        "date" : date_dev
     }
 
     return anime_run
