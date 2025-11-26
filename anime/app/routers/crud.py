@@ -27,6 +27,7 @@ async def create(
     film: Optional[FilmEnum] = Form(None),
     tipus: Optional[TipusEnum] = Form(None),
     pais: Optional[str] = Form(""),
+    director: Optional[str] = Form(""),
     db: db_dependency = Annotated # type: ignore
 ):
     
@@ -40,6 +41,7 @@ async def create(
         tipus=tipus
     )
     pais_dev = anime_data.create_pais(pais=pais)
+    director_dev = anime_data.create_director(director=director)
 
     print(pais_dev)
     print(animes_dev)
@@ -51,7 +53,8 @@ async def create(
         "primer_episodi": animes_dev.primer_episodi,
         "film": animes_dev.film,
         "tipus": animes_dev.tipus,
-        "pais": pais_dev
+        "pais": pais_dev,
+        "director": director_dev
     }
 
     return anime_run

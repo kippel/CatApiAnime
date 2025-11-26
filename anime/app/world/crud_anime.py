@@ -1,4 +1,4 @@
-from app.db.models import Anime, Pais
+from app.db.models import Anime, Pais, Director, AnimeDirector
 
 
 class CrudAnime:
@@ -58,6 +58,36 @@ class CrudAnime:
             pais_data_dev_list.append(pais.pais)
         
         return pais_data_dev_list
+
+    def create_director(self,director: str):
+      
+        for director in director.split(","):
+            director_dev = ' '.join(director.split())
+            director_data_dev = self.db.query(Director).filter(Director.nom == director_dev).first()
+            if director_data_dev is None:
+                director_data = Director(
+                    nom=director_dev
+                )
+                self.db.add(director_data)
+                self.db.commit()
+                self.db.refresh(director_data)
+
+                director_data_dev = self.db.query(Director).filter(Director.nom == director_dev).first()
+            
+            anime_director_data = AnimeDirector(
+                anime_id=self.id,
+                director_id=director_data_dev.id
+            )
+            self.db.add(anime_director_data)
+            self.db.commit()
+            self.db.refresh(anime_director_data)
+
+        anime_director_data_dev = self.db.query(AnimeDirector).filter(AnimeDirector.anime_id == self.id).all()
+        
+        anime_director_data_dev_list = [anime_director_data.director_id for anime_director_data in anime_director_data_dev]
+        
+        return anime_director_data_dev_list
+
         
 
 class UpdateAnime:
@@ -78,8 +108,18 @@ class UpdateAnime:
         if pais_data is None:
             raise HTTPException(status_code=404, detail="Anime not found")
         
-        pais_data_list = []
-        for pais in pais_data:
-            pais_data_list.append(pais.pais)
+        pais_data_list = [pais.pais for pais in pais_data]
 
         return pais_data_list   
+
+    def update_director(self) -> Anime:
+        anime_director_data = self.db.query(AnimeDirector).filter(AnimeDirector.anime_id == self.id).all()
+
+        anime_director_data_list = []
+
+        for anime_director_data in anime_director_data:
+
+            director_data = self.db.query(Director).filter(Director.id == anime_director_data.director_id).first()
+            anime_director_data_list.append(director_data.nom)
+        
+        return anime_director_data_list
