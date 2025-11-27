@@ -84,6 +84,7 @@ async def create_series_id(
     ultim_episodis: str = Form(""),
     temporades: int = Form(...),
     episodis: int = Form(...),
+    volumes: int = Form(...),
     db: db_dependency = Annotated # type: ignore)
 ):
 
@@ -92,6 +93,7 @@ async def create_series_id(
         ultim_episodis=ultim_episodis,
         temporades=temporades,
         episodis=episodis,
+        volumes=volumes,
         anime_id=id
     )
 

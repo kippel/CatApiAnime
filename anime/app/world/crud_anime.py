@@ -11,6 +11,7 @@ from app.db.models import (
     Musica
     
 )
+from app.countries import countries
 
 
 class CrudAnime:
@@ -49,8 +50,6 @@ class CrudAnime:
 
     def create_pais(self,pais: str):
 
-
-
         pais_data_list = []
 
         if pais == "":
@@ -60,6 +59,12 @@ class CrudAnime:
         for pais in pais.split(","):
 
             pais_dev = ' '.join(pais.split())
+            
+            for i in countries:
+                if pais_dev == i[1]:
+                    break
+            else:
+                raise HTTPException(status_code=404, detail="Pais not found") 
 
             pais_data = Pais(
                 anime_id=self.id,

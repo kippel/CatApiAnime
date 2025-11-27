@@ -69,6 +69,9 @@ class AnimeSerie(Base):
     anime: Mapped["Anime"] = relationship("Anime", back_populates="anime_series")
 
 
+
+
+
 #########################################################################
 class Director(Base):
     __tablename__ = "directors"
@@ -117,6 +120,7 @@ class Paraula(Base):
     __tablename__ = "paraula"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     paraula: Mapped[str] = mapped_column(String)
+    volumes: Mapped[int] = mapped_column(Integer)
     anime_paraula: Mapped[list["AnimeParaula"]] = relationship("AnimeParaula", back_populates="paraula")
 
 class AnimeParaula(Base):
