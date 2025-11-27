@@ -78,7 +78,7 @@ async def create(
 }
 """
 @router.post("/serie/{id}")
-async def create_id(
+async def create_series_id(
     id: int,
     durada_dels_capitols: str = Form(""),
     ultim_episodis: str = Form(""),
