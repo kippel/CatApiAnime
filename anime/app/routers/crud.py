@@ -50,6 +50,7 @@ async def create(
     generes_dev = anime_data.create_generes(generes=generes)
     paraula_dev = anime_data.create_paraula(paraula=paraula)
     musica_dev = anime_data.create_musica(musica=musica)
+    
     anime_run = {
         "id": animes_dev.id,
         "titol": animes_dev.titol,

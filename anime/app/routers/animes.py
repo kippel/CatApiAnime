@@ -28,6 +28,7 @@ async def get_anime(db: db_dependency, id: int):
     director_dev = anime_data.update_director()
     date_dev = anime_data.update_date()
     generes_dev = anime_data.update_generes()
+    musica_dev = anime_data.update_musica()
     paraula_dev = anime_data.update_paraula()
 
     anime_dict = {
@@ -41,6 +42,7 @@ async def get_anime(db: db_dependency, id: int):
         "director": director_dev,
         "date": date_dev,
         "generes": generes_dev,
+        "musica": musica_dev,
         "paraula" : paraula_dev
     }
 
