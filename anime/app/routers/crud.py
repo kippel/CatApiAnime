@@ -31,6 +31,7 @@ async def create(
     date: Optional[str] = Form(""),    
     generes: Optional[str] = Form(""),
     paraula: Optional[str] = Form(""),
+    musica: Optional[str] = Form(""),
     db: db_dependency = Annotated # type: ignore
 ):
     
@@ -48,7 +49,7 @@ async def create(
     date_dev = anime_data.create_date(date=date)
     generes_dev = anime_data.create_generes(generes=generes)
     paraula_dev = anime_data.create_paraula(paraula=paraula)
-
+    musica_dev = anime_data.create_musica(musica=musica)
     anime_run = {
         "id": animes_dev.id,
         "titol": animes_dev.titol,
@@ -60,7 +61,8 @@ async def create(
         "director": director_dev,
         "date" : date_dev,
         "generes" : generes_dev,
-        "paraula" : paraula_dev
+        "paraula" : paraula_dev,
+        "musica" : musica_dev
     }
 
     return anime_run

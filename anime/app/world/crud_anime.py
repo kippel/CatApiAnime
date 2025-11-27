@@ -7,7 +7,9 @@ from app.db.models import (
     Generes, 
     AnimeGeneres,
     Paraula,
-    AnimeParaula
+    AnimeParaula,
+    Musica
+    
 )
 
 
@@ -70,9 +72,7 @@ class CrudAnime:
 
         pais_data_dev = self.db.query(Pais).filter(Pais.anime_id == self.id).all()
         
-        pais_data_dev_list = []
-        for pais in pais_data_dev:
-            pais_data_dev_list.append(pais.pais)
+        pais_data_dev_list = [pais.pais for pais in pais_data_dev]
         
         return pais_data_dev_list
 
@@ -179,7 +179,24 @@ class CrudAnime:
         
         return paraula_data_list
 
-    
+    def create_musica(self,musica: str):
+        musica_data_list = []
+        
+        for musica in musica.split(","):
+            musica_dev = ' '.join(musica.split())
+            
+            musica_data = Musica(
+                anime_id=self.id,
+                musica=musica_dev
+            )
+            self.db.add(musica_data)
+            self.db.commit()
+            self.db.refresh(musica_data)
+        
+        musica_data_dev = self.db.query(Musica).filter(Musica.anime_id == self.id).all()
+        musica_data_dev_list = [musica.musica for musica in musica_data_dev]
+        
+        return musica_data_dev_list
 
         
 
@@ -247,3 +264,11 @@ class UpdateAnime:
             anime_paraula_data_list.append(paraula_data.paraula)
         
         return anime_paraula_data_list
+    
+    def update_musica(self) -> Anime:
+        
+        anime_musica_data = self.db.query(Musica).filter(Musica.anime_id == self.id).all()
+
+        anime_musica_data_list = [anime_musica_data.musica for anime_musica_data in anime_musica_data]
+        
+        return anime_musica_data_list

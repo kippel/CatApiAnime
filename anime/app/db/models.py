@@ -46,6 +46,7 @@ class Anime(Base):
     anime_paraula: Mapped[list["AnimeParaula"]] = relationship("AnimeParaula", back_populates="anime")
     
     
+    
 
 
 """
@@ -134,5 +135,13 @@ class Pais(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     pais: Mapped[str] = mapped_column(String)   
     anime_id: Mapped[int] = mapped_column(ForeignKey("animes.id"))
+    
 
+#########################################################################
+
+class Musica(Base):
+    __tablename__ = "anime_musica"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    musica: Mapped[str] = mapped_column(String)
+    anime_id: Mapped[int] = mapped_column(ForeignKey("animes.id"))
     
