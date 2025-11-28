@@ -32,6 +32,7 @@ async def create(
     generes: Optional[str] = Form(""),
     paraula: Optional[str] = Form(""),
     musica: Optional[str] = Form(""),
+    wiki: Optional[str] = Form(""),
     db: db_dependency = Annotated # type: ignore
 ):
     
@@ -50,7 +51,8 @@ async def create(
     generes_dev = anime_data.create_generes(generes=generes)
     paraula_dev = anime_data.create_paraula(paraula=paraula)
     musica_dev = anime_data.create_musica(musica=musica)
-    
+    wiki_dev = anime_data.create_wiki(wiki=wiki)
+
     anime_run = {
         "id": animes_dev.id,
         "titol": animes_dev.titol,
@@ -63,7 +65,9 @@ async def create(
         "date" : date_dev,
         "generes" : generes_dev,
         "paraula" : paraula_dev,
-        "musica" : musica_dev
+        "musica" : musica_dev,
+        "wiki" : wiki_dev
+        
     }
 
     return anime_run
@@ -84,18 +88,26 @@ async def create_series_id(
     ultim_episodis: str = Form(""),
     temporades: int = Form(...),
     episodis: int = Form(...),
-    volumes: int = Form(...),
     db: db_dependency = Annotated # type: ignore)
 ):
 
-    anime_data = AnimeSerie(
-        durada_dels_capitols=durada_dels_capitols,
-        ultim_episodis=ultim_episodis,
-        temporades=temporades,
-        episodis=episodis,
-        volumes=volumes,
-        anime_id=id
-    )
+
+    # TODO: Update anime_data
+    anime_data = db.query(AnimeSerie).filter(AnimeSerie.anime_id == id).first()
+    
+    if anime_data == None:
+        anime_data = AnimeSerie(
+            durada_dels_capitols=durada_dels_capitols,
+            ultim_episodis=ultim_episodis,
+            temporades=temporades,
+            episodis=episodis,
+            anime_id=id
+        )
+    else:
+        anime_data.durada_dels_capitols = durada_dels_capitols
+        anime_data.ultim_episodis = ultim_episodis
+        anime_data.temporades = temporades
+        anime_data.episodis = episodis
 
     db.add(anime_data)
     db.commit()

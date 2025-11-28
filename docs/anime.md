@@ -4,7 +4,7 @@
 
 # A
 
-- [ ] L'abella Maia
+- [x] L'abella Maia
 - [ ] Alita, àngel de combat
 - [ ] Arc the Land
 - [ ] Avatar

@@ -7,6 +7,6 @@ anime/app/db/__pycache__/*
 anime/app/routers/__pycache__/*
 anime/tests/__pycache__/*
 anime/app/world/__pycache__/*
-anime/data/sql_app_test.db
 
-docker-compose.yml
+
+

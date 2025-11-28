@@ -148,4 +148,12 @@ class Musica(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     musica: Mapped[str] = mapped_column(String)
     anime_id: Mapped[int] = mapped_column(ForeignKey("animes.id"))
+
+#########################################################################
+
+class Wiki(Base):
+    __tablename__ = "anime_wiki"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    anime_id: Mapped[int] = mapped_column(ForeignKey("animes.id"))
+    wiki: Mapped[str] = mapped_column(String)
     

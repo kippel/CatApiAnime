@@ -30,6 +30,10 @@ async def get_anime(db: db_dependency, id: int):
     generes_dev = anime_data.update_generes()
     musica_dev = anime_data.update_musica()
     paraula_dev = anime_data.update_paraula()
+    
+    wiki_dev = anime_data.update_wiki()
+
+    
 
     anime_dict = {
         "id": anime_dev.id,
@@ -43,8 +47,13 @@ async def get_anime(db: db_dependency, id: int):
         "date": date_dev,
         "generes": generes_dev,
         "musica": musica_dev,
-        "paraula" : paraula_dev
+        "paraula" : paraula_dev,
+        "wiki" : wiki_dev
     }
 
+
+    if anime_dev.tipus in ["Series", "OVA"]:
+        serie_dev = anime_data.update_serie()
+        anime_dict["serie"] = serie_dev
 
     return anime_dict

@@ -85,7 +85,7 @@ countries = [
     ('is', 'Icelandic'),
     ('it', 'Italian'),
     ('jv', 'Javanese'),
-    ('ja', 'Japanese'),
+    ('ja', 'Japo'),
     ('kl', 'Kalaallisut; Greenlandic'),
     ('kn', 'Kannada'),
     ('ks', 'Kashmiri'),

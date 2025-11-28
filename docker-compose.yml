@@ -1,0 +1,10 @@
+services:
+  anime:
+    build: ./anime
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./anime/data:/app/data
+    environment:
+      - SQLITE=false
+      - DATABASE_URL=sqlite:////app/data/sql_app.db

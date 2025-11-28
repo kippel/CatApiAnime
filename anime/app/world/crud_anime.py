@@ -8,7 +8,9 @@ from app.db.models import (
     AnimeGeneres,
     Paraula,
     AnimeParaula,
-    Musica
+    Musica,
+    AnimeSerie,
+    Wiki
     
 )
 from app.countries import countries
@@ -203,7 +205,25 @@ class CrudAnime:
         
         return musica_data_dev_list
 
+    def create_wiki(self,wiki: str):
+
+        wiki_dev = ' '.join(wiki.split())   
+
+        for wiki in wiki.split(","):
+            wiki_dev = ' '.join(wiki.split())
+            
+            wiki_data = Wiki(
+                anime_id=self.id,
+                wiki=wiki_dev
+            )
+            self.db.add(wiki_data)
+            self.db.commit()
+            self.db.refresh(wiki_data)
+            
+        wiki_data_dev = self.db.query(Wiki).filter(Wiki.anime_id ==  self.id).all()
+        wiki_data_dev_list = [wiki.wiki for wiki in wiki_data_dev]
         
+        return wiki_data_dev_list
 
 class UpdateAnime:
     def __init__(self, db, id: int):
@@ -277,3 +297,30 @@ class UpdateAnime:
         anime_musica_data_list = [anime_musica_data.musica for anime_musica_data in anime_musica_data]
         
         return anime_musica_data_list
+
+    def update_serie(self) -> Anime:
+        anime_serie_data = self.db.query(AnimeSerie).filter(AnimeSerie.anime_id == self.id).first()
+        
+        if anime_serie_data is None:
+            anime_serie_data_list = {
+                "durada_dels_capitols": "",
+                "ultim_episodis": "",
+                "temporades": 0,
+                "episodis": 0
+            }
+        else:
+            anime_serie_data_list = {
+                "durada_dels_capitols": anime_serie_data.durada_dels_capitols,
+                "ultim_episodis": anime_serie_data.ultim_episodis,
+                "temporades": anime_serie_data.temporades,
+                "episodis": anime_serie_data.episodis
+            }
+        
+        return anime_serie_data_list
+
+    def update_wiki(self) -> Anime:
+        anime_wiki_data = self.db.query(Wiki).filter(Wiki.anime_id == self.id).all()
+        anime_wiki_data_list = [anime_wiki_data.wiki for anime_wiki_data in anime_wiki_data]
+        
+        return anime_wiki_data_list
+        
