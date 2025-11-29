@@ -122,4 +122,23 @@ async def create_json(json: AnimeBase, db: db_dependency = Annotated):
     return "OK"
 '''
 
+@router.post("/paraula/{id}")
+async def create_director_id(
+    id: int,
+    volumes: int = Form(...),
+    db: db_dependency = Annotated # type: ignore)
+):
+
+    anime_data = db.query(Paraula).filter(Paraula.anime_id == id).first()
+    
+    if anime_data == None:
+        return { "error": "No existeix"}
+    
+    anime_data.volumes = volumes
+    db.add(anime_data)
+    db.commit()
+    db.refresh(anime_data)
+
+    return anime_data
+
     

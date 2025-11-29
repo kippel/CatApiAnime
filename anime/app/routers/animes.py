@@ -27,7 +27,17 @@ async def get_anime(db: db_dependency, id: int):
     return anime_dict
 
 @router.post("/paraula")
-def paraula(db: db_dependency, paraula: str ):
+def paraula(db: db_dependency):
+    """
+    Bola de drac 
+    """
+    paraula_dev = db.query(Paraula).all()
+    
+    return paraula_dev
+
+
+@router.post("/paraula/{paraula}")
+def paraula_id(db: db_dependency, paraula: str ):
     """
     Bola de drac 
     """
