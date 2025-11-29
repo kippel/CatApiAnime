@@ -3,8 +3,8 @@ from app.db.deps import (
     db_dependency,
     Annotated
 )   
-from app.db.models import Anime, AnimeSerie, Pais
-from app.world.crud_anime import UpdateAnime
+from app.db.models import Anime, AnimeSerie, Pais, Paraula, AnimeParaula
+from app.world.crud_anime import UpdateAnime, update_anime_dict
 
 router = APIRouter(prefix="/animes", tags=["animes"])
 
@@ -22,38 +22,25 @@ async def get_animes(db: db_dependency):
 @router.get("/{id}")
 async def get_anime(db: db_dependency, id: int):
 
-    anime_data = UpdateAnime(db, id)
-    anime_dev = anime_data.update_anime()
-    pais_dev = anime_data.update_pais()
-    director_dev = anime_data.update_director()
-    date_dev = anime_data.update_date()
-    generes_dev = anime_data.update_generes()
-    musica_dev = anime_data.update_musica()
-    paraula_dev = anime_data.update_paraula()
-    
-    wiki_dev = anime_data.update_wiki()
-
-    
-
-    anime_dict = {
-        "id": anime_dev.id,
-        "titol": anime_dev.titol,
-        "sinopsi": anime_dev.sinopsi,
-        "primer_episodi": anime_dev.primer_episodi,
-        "film": anime_dev.film,
-        "tipus": anime_dev.tipus,
-        "pais": pais_dev,
-        "director": director_dev,
-        "date": date_dev,
-        "generes": generes_dev,
-        "musica": musica_dev,
-        "paraula" : paraula_dev,
-        "wiki" : wiki_dev
-    }
-
-
-    if anime_dev.tipus in ["Series", "OVA"]:
-        serie_dev = anime_data.update_serie()
-        anime_dict["serie"] = serie_dev
+    anime_dict = update_anime_dict(db, id)
 
     return anime_dict
+
+@router.post("/paraula")
+def paraula(db: db_dependency, paraula: str ):
+    """
+    Bola de drac 
+    """
+    paraula_dev = db.query(Paraula).filter(Paraula.paraula == paraula).first()
+    
+    if paraula_dev is None:
+        return {"error": "No existeix"}
+
+    anime_dev = db.query(AnimeParaula).filter(AnimeParaula.paraula_id == paraula_dev.id).all()
+    
+    anime_dev_list = []
+    for anime in anime_dev:
+        anime_dict = update_anime_dict(db, anime.anime_id)
+        anime_dev_list.append(anime_dict)
+    
+    return anime_dev_list

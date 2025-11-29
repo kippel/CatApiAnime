@@ -167,7 +167,8 @@ class CrudAnime:
             paraula_data_dev = self.db.query(Paraula).filter(Paraula.paraula == paraula_dev).first()
             if paraula_data_dev is None:
                 paraula_data = Paraula(
-                    paraula=paraula_dev
+                    paraula=paraula_dev,
+                    volumes=0
                 )
                 self.db.add(paraula_data)
                 self.db.commit()
@@ -225,16 +226,68 @@ class CrudAnime:
         
         return wiki_data_dev_list
 
+
+def update_anime_dict(db, id: int):
+    anime_data = UpdateAnime(db, id)
+    anime_dev = anime_data.update_anime()
+
+    if anime_data.error_run():
+        return {"error": "No existeix"}
+
+    pais_dev = anime_data.update_pais()
+    director_dev = anime_data.update_director()
+    date_dev = anime_data.update_date()
+    generes_dev = anime_data.update_generes()
+    musica_dev = anime_data.update_musica()
+    paraula_dev = anime_data.update_paraula()
+    
+    wiki_dev = anime_data.update_wiki()
+
+    
+
+    anime_dict = {
+        "id": anime_dev.id,
+        "titol": anime_dev.titol,
+        "sinopsi": anime_dev.sinopsi,
+        "primer_episodi": anime_dev.primer_episodi,
+        "film": anime_dev.film,
+        "tipus": anime_dev.tipus,
+        "pais": pais_dev,
+        "director": director_dev,
+        "date": date_dev,
+        "generes": generes_dev,
+        "musica": musica_dev,
+        "paraula" : paraula_dev,
+        "wiki" : wiki_dev
+    }
+
+    if anime_dev.tipus in ["Series", "OVA"]:
+        serie_dev = anime_data.update_serie()
+        anime_dict["serie"] = serie_dev
+    
+    return anime_dict
+
+
+
+
+
+
 class UpdateAnime:
     def __init__(self, db, id: int):
         self.db = db
         self.id = id
-        
+        self._error = False
+
+    def error_run(self):
+        return self._error
+
 
     def update_anime(self) -> Anime:
         anime_data = self.db.query(Anime).filter(Anime.id == self.id).first()
         if anime_data is None:
-            raise HTTPException(status_code=404, detail="Anime not found")
+            self._error = True
+            return None
+            #raise HTTPException(status_code=404, detail="Anime not found")
         
         return anime_data
 

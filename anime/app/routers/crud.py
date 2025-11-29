@@ -115,7 +115,11 @@ async def create_series_id(
 
     return anime_data
 
-
-
+'''
+@router.post("/json")
+async def create_json(json: AnimeBase, db: db_dependency = Annotated):
+    
+    return "OK"
+'''
 
     

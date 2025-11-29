@@ -122,7 +122,7 @@ class Paraula(Base):
     paraula: Mapped[str] = mapped_column(String)
     volumes: Mapped[int] = mapped_column(Integer)
     anime_paraula: Mapped[list["AnimeParaula"]] = relationship("AnimeParaula", back_populates="paraula")
-
+    
 class AnimeParaula(Base):
     __tablename__ = "anime_paraula"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
