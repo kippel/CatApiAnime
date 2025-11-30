@@ -8,4 +8,5 @@ dependencies = [
     "fastapi[standard]>=0.121.3",
     "pytest>=9.0.1",
     "sqlalchemy>=2.0.44",
+    "typer>=0.20.0",
 ]

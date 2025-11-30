@@ -3,10 +3,10 @@ from app.db.deps import (
     db_dependency,
     Annotated
 )
-from app.schemas import AnimeBase
+
 from app.db.models import Anime, FilmEnum, TipusEnum, AnimeSerie, Pais, AnimeDate
 from typing import Optional
-from app.world.crud_anime import CrudAnime
+from app.world.crud_anime import CrudAnime, ASeries
 
 router = APIRouter(prefix="/crud", tags=["crud"])
 
@@ -91,36 +91,16 @@ async def create_series_id(
     db: db_dependency = Annotated # type: ignore)
 ):
 
-
-    # TODO: Update anime_data
-    anime_data = db.query(AnimeSerie).filter(AnimeSerie.anime_id == id).first()
+    anime_data = ASeries(db, id)
+    anime_data.series(
+        durada_dels_capitols=durada_dels_capitols,
+        ultim_episodis=ultim_episodis,
+        temporades=temporades,
+        episodis=episodis
+    )
     
-    if anime_data == None:
-        anime_data = AnimeSerie(
-            durada_dels_capitols=durada_dels_capitols,
-            ultim_episodis=ultim_episodis,
-            temporades=temporades,
-            episodis=episodis,
-            anime_id=id
-        )
-    else:
-        anime_data.durada_dels_capitols = durada_dels_capitols
-        anime_data.ultim_episodis = ultim_episodis
-        anime_data.temporades = temporades
-        anime_data.episodis = episodis
+    return anime_data.update_serie()
 
-    db.add(anime_data)
-    db.commit()
-    db.refresh(anime_data)
-
-    return anime_data
-
-'''
-@router.post("/json")
-async def create_json(json: AnimeBase, db: db_dependency = Annotated):
-    
-    return "OK"
-'''
 
 @router.post("/paraula/{id}")
 async def create_director_id(

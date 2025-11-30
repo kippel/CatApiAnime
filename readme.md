@@ -17,6 +17,8 @@ docker compose up --build
 docker compose -f docker-compose.dev.yml up --build
 
 
+docker compose exec anime uv run python -m app.cli
+
 docker compose exec anime uv run pytest -v
 ```
 

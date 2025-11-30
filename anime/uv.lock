@@ -10,6 +10,7 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "pytest" },
     { name = "sqlalchemy" },
+    { name = "typer" },
 ]
 
 [package.metadata]
@@ -17,6 +18,7 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.121.3" },
     { name = "pytest", specifier = ">=9.0.1" },
     { name = "sqlalchemy", specifier = ">=2.0.44" },
+    { name = "typer", specifier = ">=0.20.0" },
 ]
 
 [[package]]

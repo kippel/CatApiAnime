@@ -377,3 +377,43 @@ class UpdateAnime:
         
         return anime_wiki_data_list
         
+
+class ASeries:
+    def __init__(self, db, id: int):
+        self.db = db
+        self.id = id
+        
+    def series(self, 
+        durada_dels_capitols: str, 
+        ultim_episodis: str, 
+        temporades: int, 
+        episodis: int
+    ):
+        anime_data = self.db.query(AnimeSerie).filter(AnimeSerie.anime_id == self.id).first()
+        
+        if anime_data == None:
+            anime_data = AnimeSerie(
+                durada_dels_capitols=durada_dels_capitols,
+                ultim_episodis=ultim_episodis,
+                temporades=temporades,
+                episodis=episodis,
+                anime_id=self.id
+            )
+        else:
+            anime_data.durada_dels_capitols = durada_dels_capitols
+            anime_data.ultim_episodis = ultim_episodis
+            anime_data.temporades = temporades
+            anime_data.episodis = episodis
+
+        self.db.add(anime_data)
+        self.db.commit()
+        self.db.refresh(anime_data)
+
+    
+    def update_serie(self):
+        anime_data = self.db.query(AnimeSerie).filter(AnimeSerie.anime_id == self.id).first()
+
+        return anime_data
+
+        
+        
