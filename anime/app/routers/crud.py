@@ -7,6 +7,8 @@ from app.db.deps import (
 from app.db.models import Anime, FilmEnum, TipusEnum, AnimeSerie, Pais, AnimeDate
 from typing import Optional
 from app.world.crud_anime import CrudAnime, ASeries
+from app.schemas import AnimeCreate
+
 
 router = APIRouter(prefix="/crud", tags=["crud"])
 
@@ -119,6 +121,42 @@ async def create_director_id(
     db.commit()
     db.refresh(anime_data)
 
+    return anime_data
+
+@router.get("/anime/{id}")
+def update_anime_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime_data = db.query(Anime).filter(Anime.id == id).first()
+    
+    if anime_data == None:
+        return { "error": "No existeix"}
+    
+    return anime_data
+
+@router.post("/anime/{id}")
+def update_anime_id(
+    id: int,
+    anime_data_update: AnimeCreate,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime_data = db.query(Anime).filter(Anime.id == id).first()
+    
+    if anime_data == None:
+        return { "error": "No existeix"}
+            
+
+    anime_data.titol = anime_data_update.titol
+    anime_data.sinopsi = anime_data_update.sinopsi
+    anime_data.primer_episodi = anime_data_update.primer_episodi
+    anime_data.film = anime_data_update.film
+    anime_data.tipus = anime_data_update.tipus
+
+    db.add(anime_data)
+    db.commit()
+    db.refresh(anime_data)
+    
     return anime_data
 
     

@@ -1,5 +1,8 @@
 from pydantic import BaseModel
 from fastapi import Form
+from typing import Optional
+from app.db.models import FilmEnum, TipusEnum
+
 
 class AnimeBase(BaseModel):
     titol: str = Form(...)
@@ -18,4 +21,9 @@ class AnimeBase(BaseModel):
     film: str = Form("")
     tipus: str = Form("")
     
-   
+class AnimeCreate(BaseModel):
+    titol: str = Form(...)
+    sinopsi: str = Form("")
+    primer_episodi: str = Form("")
+    film: Optional[FilmEnum] = Form(None)
+    tipus: Optional[TipusEnum] = Form(None)
