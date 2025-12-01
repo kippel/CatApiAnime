@@ -7,7 +7,7 @@ from app.db.deps import (
 from app.db.models import Anime, FilmEnum, TipusEnum, AnimeSerie, Pais, AnimeDate
 from typing import Optional
 from app.world.crud_anime import CrudAnime, ASeries
-from app.schemas import AnimeCreate
+from app.schemas import AnimeCreateBase, SeriesBase
 
 
 router = APIRouter(prefix="/crud", tags=["crud"])
@@ -74,36 +74,6 @@ async def create(
 
     return anime_run
 
-
-"""
-{
-  "durada_dels_capiols" : "25 min",
-  "ultim_episodi : "19-05-1989",
-  "temporades" : 5,
-  "episodis" : 153,
-}
-"""
-@router.post("/serie/{id}")
-async def create_series_id(
-    id: int,
-    durada_dels_capitols: str = Form(""),
-    ultim_episodis: str = Form(""),
-    temporades: int = Form(...),
-    episodis: int = Form(...),
-    db: db_dependency = Annotated # type: ignore)
-):
-
-    anime_data = ASeries(db, id)
-    anime_data.series(
-        durada_dels_capitols=durada_dels_capitols,
-        ultim_episodis=ultim_episodis,
-        temporades=temporades,
-        episodis=episodis
-    )
-    
-    return anime_data.update_serie()
-
-
 @router.post("/paraula/{id}")
 async def create_director_id(
     id: int,
@@ -135,10 +105,10 @@ def update_anime_id(
     
     return anime_data
 
-@router.post("/anime/{id}")
+@router.put("/anime/{id}", response_model=AnimeCreateBase)
 def update_anime_id(
     id: int,
-    anime_data_update: AnimeCreate,
+    anime_data_update: AnimeCreateBase,
     db: db_dependency = Annotated # type: ignore)
 ):
     anime_data = db.query(Anime).filter(Anime.id == id).first()
@@ -159,4 +129,59 @@ def update_anime_id(
     
     return anime_data
 
+
+############################################################################
+
+"""
+{
+  "durada_dels_capiols" : "25 min",
+  "ultim_episodi : "19-05-1989",
+  "temporades" : 5,
+  "episodis" : 153,
+}
+"""
+@router.get("/series/{id}")
+def get_series_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime_data = db.query(AnimeSerie).filter(AnimeSerie.anime_id == id).first()
     
+    if anime_data == None:
+        return { "error": "No existeix"}
+    
+    return anime_data
+
+@router.put("/series/{id}", response_model=SeriesBase)
+def update_series_id(
+    id: int,
+    series_data_update: SeriesBase,
+    db: db_dependency = Annotated # type: ignore)
+):
+
+    anime_data = ASeries(db, id)
+    anime_data.series(
+        durada_dels_capitols=series_data_update.durada_dels_capitols,
+        ultim_episodis=series_data_update.ultim_episodis,
+        temporades=series_data_update.temporades,
+        episodis=series_data_update.episodis
+    )
+    
+    return anime_data.update_serie()
+
+@router.delete("/series/{id}")
+def delete_series_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime_data = db.query(AnimeSerie).filter(AnimeSerie.anime_id == id).first()
+    
+    if anime_data == None:
+        return { "error": "No existeix"}
+    
+    db.delete(anime_data)
+    db.commit()
+    
+    return { "message": "Anime deleted"}
+    
+############################################################################

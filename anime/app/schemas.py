@@ -21,9 +21,16 @@ class AnimeBase(BaseModel):
     film: str = Form("")
     tipus: str = Form("")
     
-class AnimeCreate(BaseModel):
+class AnimeCreateBase(BaseModel):
     titol: str = Form(...)
     sinopsi: str = Form("")
     primer_episodi: str = Form("")
     film: Optional[FilmEnum] = Form(None)
     tipus: Optional[TipusEnum] = Form(None)
+
+
+class SeriesBase(BaseModel):
+    ultim_episodis: str = Form("")
+    durada_dels_capitols: str = Form("")
+    episodis: int = Form(...)
+    temporades: int = Form(...)
