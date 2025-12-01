@@ -9,6 +9,7 @@ from app.db.models import (
     Paraula,
     AnimeParaula,
     Musica,
+    MusicaWiki,
     AnimeSerie,
     Wiki
     
@@ -206,6 +207,25 @@ class CrudAnime:
         
         return musica_data_dev_list
 
+    def create_musica_wiki(self,musica_wiki: str):
+        musica_wiki_data_list = []
+        
+        for musica_wiki in musica_wiki.split(","):
+            musica_wiki_dev = ' '.join(musica_wiki.split())
+            
+            musica_wiki_data = MusicaWiki(
+                anime_id=self.id,
+                musica_wiki=musica_wiki_dev
+            )
+            self.db.add(musica_wiki_data)
+            self.db.commit()
+            self.db.refresh(musica_wiki_data)
+        
+        musica_wiki_data_dev = self.db.query(MusicaWiki).filter(MusicaWiki.anime_id == self.id).all()
+        musica_wiki_data_dev_list = [musica_wiki.musica_wiki for musica_wiki in musica_wiki_data_dev]
+        
+        return musica_wiki_data_dev_list
+
     def create_wiki(self,wiki: str):
 
         wiki_dev = ' '.join(wiki.split())   
@@ -240,6 +260,7 @@ def update_anime_dict(db, id: int):
     generes_dev = anime_data.update_generes()
     musica_dev = anime_data.update_musica()
     paraula_dev = anime_data.update_paraula()
+    musica_wiki_dev = anime_data.update_musica_wiki()
     
     wiki_dev = anime_data.update_wiki()
 
@@ -257,6 +278,7 @@ def update_anime_dict(db, id: int):
         "date": date_dev,
         "generes": generes_dev,
         "musica": musica_dev,
+        "musica_wiki" : musica_wiki_dev,
         "paraula" : paraula_dev,
         "wiki" : wiki_dev
     }
@@ -350,6 +372,13 @@ class UpdateAnime:
         anime_musica_data_list = [anime_musica_data.musica for anime_musica_data in anime_musica_data]
         
         return anime_musica_data_list
+
+    def update_musica_wiki(self) -> Anime:
+        anime_musica_wiki_data = self.db.query(MusicaWiki).filter(MusicaWiki.anime_id == self.id).all()
+
+        anime_musica_wiki_data_list = [anime_musica_wiki_data.musica_wiki for anime_musica_wiki_data in anime_musica_wiki_data]
+        
+        return anime_musica_wiki_data_list
 
     def update_serie(self) -> Anime:
         anime_serie_data = self.db.query(AnimeSerie).filter(AnimeSerie.anime_id == self.id).first()

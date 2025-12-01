@@ -46,6 +46,7 @@ async def create(
     generes: Optional[str] = Form(""),
     paraula: Optional[str] = Form(""),
     musica: Optional[str] = Form(""),
+    musica_wiki: Optional[str] = Form(""),
     wiki: Optional[str] = Form(""),
     db: db_dependency = Annotated # type: ignore
 ):
@@ -65,6 +66,7 @@ async def create(
     generes_dev = anime_data.create_generes(generes=generes)
     paraula_dev = anime_data.create_paraula(paraula=paraula)
     musica_dev = anime_data.create_musica(musica=musica)
+    musica_wiki_dev = anime_data.create_musica_wiki(musica_wiki=musica_wiki)
     wiki_dev = anime_data.create_wiki(wiki=wiki)
 
     anime_run = {
@@ -80,6 +82,7 @@ async def create(
         "generes" : generes_dev,
         "paraula" : paraula_dev,
         "musica" : musica_dev,
+        "musica_wiki" : musica_wiki_dev,
         "wiki" : wiki_dev
         
     }

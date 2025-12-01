@@ -23,7 +23,8 @@ def bola_de_drac(db):
     anime.create_date("")
     anime.create_generes("Action")
     anime.create_paraula("Bola de drac")
-    anime.create_musica("Shunsuke Kikuchi,https://www.youtube.com/watch?v=cENvh9nQjNc, https://www.youtube.com/watch?v=puSHHK8LOlQ")
+    anime.create_musica("Shunsuke Kikuchi")
+    anime.create_musica_wiki("https://www.youtube.com/watch?v=cENvh9nQjNc, https://www.youtube.com/watch?v=puSHHK8LOlQ")
     anime.create_wiki("https://en.wikipedia.org/wiki/Bola_de_drac")
     
     serie_anime = ASeries(db, anime.id)
@@ -62,7 +63,8 @@ def abella_maia(db):
     anime.create_date("05-02-2004")
     anime.create_generes("Fantasia")
     anime.create_paraula("")
-    anime.create_musica("https://www.youtube.com/watch?v=CNZ-vyQaGAg")
+    anime.create_musica("")
+    anime.create_musica_wiki("https://www.youtube.com/watch?v=CNZ-vyQaGAg")
     anime.create_wiki("https://ca.wikipedia.org/wiki/Abella_Maia")
     
 
