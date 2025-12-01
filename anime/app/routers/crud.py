@@ -1,13 +1,24 @@
-from fastapi import APIRouter, Form, Depends
+from fastapi import APIRouter, Form, Depends, HTTPException
 from app.db.deps import (
     db_dependency,
     Annotated
 )
 
-from app.db.models import Anime, FilmEnum, TipusEnum, AnimeSerie, Pais, AnimeDate
+from app.db.models import (
+    Anime, 
+    FilmEnum, 
+    TipusEnum, 
+    AnimeSerie, 
+    Pais, 
+    AnimeDate
+)
 from typing import Optional
 from app.world.crud_anime import CrudAnime, ASeries
-from app.schemas import AnimeCreateBase, SeriesBase
+from app.schemas import (
+    AnimeCreateBase, 
+    SeriesBase,
+    DateBase
+)
 
 
 router = APIRouter(prefix="/crud", tags=["crud"])
@@ -84,7 +95,7 @@ async def create_director_id(
     anime_data = db.query(Paraula).filter(Paraula.anime_id == id).first()
     
     if anime_data == None:
-        return { "error": "No existeix"}
+        raise HTTPException(status_code=404, detail="Anime not found")
     
     anime_data.volumes = volumes
     db.add(anime_data)
@@ -101,7 +112,7 @@ def update_anime_id(
     anime_data = db.query(Anime).filter(Anime.id == id).first()
     
     if anime_data == None:
-        return { "error": "No existeix"}
+        raise HTTPException(status_code=404, detail="Anime not found")
     
     return anime_data
 
@@ -114,7 +125,7 @@ def update_anime_id(
     anime_data = db.query(Anime).filter(Anime.id == id).first()
     
     if anime_data == None:
-        return { "error": "No existeix"}
+        raise HTTPException(status_code=404, detail="Anime not found")
             
 
     anime_data.titol = anime_data_update.titol
@@ -148,7 +159,7 @@ def get_series_id(
     anime_data = db.query(AnimeSerie).filter(AnimeSerie.anime_id == id).first()
     
     if anime_data == None:
-        return { "error": "No existeix"}
+        raise HTTPException(status_code=404, detail="Anime not found")
     
     return anime_data
 
@@ -177,11 +188,90 @@ def delete_series_id(
     anime_data = db.query(AnimeSerie).filter(AnimeSerie.anime_id == id).first()
     
     if anime_data == None:
-        return { "error": "No existeix"}
+        raise HTTPException(status_code=404, detail="Anime not found")
+    
     
     db.delete(anime_data)
     db.commit()
     
     return { "message": "Anime deleted"}
     
+############################################################################
+
+@router.get("/dates/{id}")
+def get_date_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime_data = db.query(AnimeDate).filter(AnimeDate.anime_id == id).all()
+    
+    if len(anime_data) == 0:
+        raise HTTPException(status_code=404, detail="Anime not found")
+    
+    return anime_data
+
+
+@router.put("/dates/{id}", response_model=DateBase)
+def update_date_id(
+    id: int,
+    date_data_update: DateBase,
+    db: db_dependency = Annotated # type: ignore)
+):
+    
+    anime = db.query(Anime).filter(Anime.id == id).first()
+    print(anime == None)
+    if anime == None:
+
+        raise HTTPException(status_code=404, detail="Anime not found")
+
+    anime_date = AnimeDate(
+        anime_id=anime.id,
+        date=date_data_update.date
+    )
+    
+    db.add(anime_date)
+    db.commit()
+    db.refresh(anime_date)
+    
+    return anime_date
+
+@router.delete("/dates/{id}")
+def delete_date_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime_date = db.query(AnimeDate).filter(AnimeDate.anime_id == id).all()
+    
+    if len(anime_date) == 0:
+        raise HTTPException(status_code=404, detail="Anime not found")
+    
+    for anime in anime_date:
+        db.delete(anime)
+    db.commit()
+    
+    return { "message": "Dates deleted"}
+
+@router.delete("/dates_id/{id}")
+def delete_date_id_id(
+    id: int,
+    date: str,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime = db.query(AnimeDate).filter(AnimeDate.anime_id == id).first()
+    
+    if anime == None:
+        raise HTTPException(status_code=404, detail="Anime not found")
+
+    anime_date = db.query(AnimeDate).filter(AnimeDate.anime_id == id, AnimeDate.date == date).first()
+    
+    if anime_date == None:
+        raise HTTPException(status_code=404, detail="Anime not found")
+    
+    db.delete(anime_date)
+    db.commit()
+
+    anime_date_all = db.query(AnimeDate).filter(AnimeDate.anime_id == id).all()
+    
+    return anime_date_all
+
 ############################################################################

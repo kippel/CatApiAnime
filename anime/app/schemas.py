@@ -34,3 +34,7 @@ class SeriesBase(BaseModel):
     durada_dels_capitols: str = Form("")
     episodis: int = Form(...)
     temporades: int = Form(...)
+
+
+class DateBase(BaseModel):
+    date: str = Form("")
