@@ -35,11 +35,15 @@ class SeriesBase(BaseModel):
     episodis: int = Form(...)
     temporades: int = Form(...)
 
-
 class DateBase(BaseModel):
     date: str = Form("")
 
-
 class PaisBase(BaseModel):
     pais: str = Form("")
+
+class MusicaBase(BaseModel):
+    musica: str = Form("")
+    
+class MusicaWikiBase(BaseModel):
+    musica_wiki: str = Form("")
     

@@ -20,7 +20,7 @@ def bola_de_drac(db):
 
     anime.create_pais("Japo")
     anime.create_director("Minoru Okazaki, Daisuke Nishio")
-    anime.create_date("")
+    #anime.create_date("")
     anime.create_generes("Action")
     anime.create_paraula("Bola de drac")
     anime.create_musica("Shunsuke Kikuchi")
@@ -62,8 +62,8 @@ def abella_maia(db):
     anime.create_director("Hiroshi Saito")
     anime.create_date("05-02-2004")
     anime.create_generes("Fantasia")
-    anime.create_paraula("")
-    anime.create_musica("")
+    #anime.create_paraula("")
+    #anime.create_musica("")
     anime.create_musica_wiki("https://www.youtube.com/watch?v=CNZ-vyQaGAg")
     anime.create_wiki("https://ca.wikipedia.org/wiki/Abella_Maia")
     

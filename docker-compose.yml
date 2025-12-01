@@ -6,5 +6,6 @@ services:
     volumes:
       - ./anime/data:/app/data
     environment:
-      - SQLITE=false
+      - TEST_CRUD=False
+      - SQLITE=False
       - DATABASE_URL=sqlite:////app/data/sql_app.db

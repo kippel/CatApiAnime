@@ -10,7 +10,9 @@ from app.db.models import (
     TipusEnum, 
     AnimeSerie, 
     Pais, 
-    AnimeDate
+    AnimeDate,
+    Musica,
+    MusicaWiki
 )
 from typing import Optional
 from app.world.crud_anime import CrudAnime, ASeries
@@ -18,7 +20,9 @@ from app.schemas import (
     AnimeCreateBase, 
     SeriesBase,
     DateBase,
-    PaisBase
+    PaisBase,
+    MusicaBase,
+    MusicaWikiBase
 )
 
 
@@ -163,7 +167,7 @@ def get_series_id(
     anime_data = db.query(AnimeSerie).filter(AnimeSerie.anime_id == id).first()
     
     if anime_data == None:
-        raise HTTPException(status_code=404, detail="Anime not found")
+        raise HTTPException(status_code=404, detail="Series not found")
     
     return anime_data
 
@@ -192,7 +196,7 @@ def delete_series_id(
     anime_data = db.query(AnimeSerie).filter(AnimeSerie.anime_id == id).first()
     
     if anime_data == None:
-        raise HTTPException(status_code=404, detail="Anime not found")
+        raise HTTPException(status_code=404, detail="Series not found")
     
     
     db.delete(anime_data)
@@ -210,7 +214,7 @@ def get_date_id(
     anime_data = db.query(AnimeDate).filter(AnimeDate.anime_id == id).all()
     
     if len(anime_data) == 0:
-        raise HTTPException(status_code=404, detail="Anime not found")
+        raise HTTPException(status_code=404, detail="Date not found")
     
     return anime_data
 
@@ -223,10 +227,8 @@ def update_date_id(
 ):
     
     anime = db.query(Anime).filter(Anime.id == id).first()
-    print(anime == None)
     if anime == None:
-
-        raise HTTPException(status_code=404, detail="Anime not found")
+        raise HTTPException(status_code=404, detail="Date not found")
 
     anime_date = AnimeDate(
         anime_id=anime.id,
@@ -247,7 +249,7 @@ def delete_date_id(
     anime_date = db.query(AnimeDate).filter(AnimeDate.anime_id == id).all()
     
     if len(anime_date) == 0:
-        raise HTTPException(status_code=404, detail="Anime not found")
+        raise HTTPException(status_code=404, detail="Date not found")
     
     for anime in anime_date:
         db.delete(anime)
@@ -264,12 +266,12 @@ def delete_date_id_id(
     anime = db.query(AnimeDate).filter(AnimeDate.anime_id == id).first()
     
     if anime == None:
-        raise HTTPException(status_code=404, detail="Anime not found")
+        raise HTTPException(status_code=404, detail="Date not found")
 
     anime_date = db.query(AnimeDate).filter(AnimeDate.anime_id == id, AnimeDate.date == date).first()
     
     if anime_date == None:
-        raise HTTPException(status_code=404, detail="Anime not found")
+        raise HTTPException(status_code=404, detail="Date not found")
     
     db.delete(anime_date)
     db.commit()
@@ -285,12 +287,12 @@ def pais_id(
     id: int,
     db: db_dependency = Annotated # type: ignore)
 ):
-    anime_data = db.query(Pais).filter(Pais.anime_id == id).all()
+    pais_data = db.query(Pais).filter(Pais.anime_id == id).all()
     
-    if len(anime_data) == 0:
-        raise HTTPException(status_code=404, detail="Anime not found")
+    if len(pais_data) == 0:
+        raise HTTPException(status_code=404, detail="Pais not found")
     
-    return anime_data
+    return pais_data
 
 @router.put("/pais/{id}", response_model=PaisBase)
 def update_pais_id(
@@ -301,31 +303,31 @@ def update_pais_id(
     anime = db.query(Anime).filter(Anime.id == id).first()
     
     if anime == None:
-        raise HTTPException(status_code=404, detail="Anime not found")
+        raise HTTPException(status_code=404, detail="Pais not found")
 
-    anime_pais = Pais(
+    pais = Pais(
         anime_id=anime.id,
         pais=pais_data_update.pais
     )
     
-    db.add(anime_pais)
+    db.add(pais)
     db.commit()
-    db.refresh(anime_pais)
+    db.refresh(pais)
     
-    return anime_pais
+    return pais
 
 @router.delete("/pais/{id}")
 def delete_pais_id(
     id: int,
     db: db_dependency = Annotated # type: ignore)
 ):
-    anime_pais = db.query(Pais).filter(Pais.anime_id == id).all()
+    pais = db.query(Pais).filter(Pais.anime_id == id).all()
     
-    if len(anime_pais) == 0:
-        raise HTTPException(status_code=404, detail="Anime not found")
+    if len(pais) == 0:
+        raise HTTPException(status_code=404, detail="Pais not found")
     
-    for anime in anime_pais:
-        db.delete(anime)
+    for pais_dev in pais:
+        db.delete(pais_dev)
     db.commit()
     
     return { "message": "Pais deleted"}
@@ -339,17 +341,166 @@ def delete_pais_id_id(
     anime = db.query(Anime).filter(Anime.id == id).first()
     
     if anime == None:
-        raise HTTPException(status_code=404, detail="Anime not found")
+        raise HTTPException(status_code=404, detail="Pais not found")
 
-    anime_pais = db.query(Pais).filter(Pais.anime_id == id, Pais.pais == pais).first()
+    pais = db.query(Pais).filter(Pais.anime_id == id, Pais.pais == pais).first()
     
-    if anime_pais == None:
-        raise HTTPException(status_code=404, detail="Anime not found")
+    if pais == None:
+        raise HTTPException(status_code=404, detail="Pais not found")
     
-    db.delete(anime_pais)
+    db.delete(pais)
     db.commit()
 
-    anime_pais_all = db.query(Pais).filter(Pais.anime_id == id).all()
+    pais_all = db.query(Pais).filter(Pais.anime_id == id).all()
     
-    return anime_pais_all
+    return pais_all
 
+############################################################################
+
+@router.get("/musica/{id}")
+def musica_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    musica_data = db.query(Musica).filter(Musica.anime_id == id).all()
+    
+    if len(musica_data) == 0:
+        raise HTTPException(status_code=404, detail="Musica not found")
+    
+    return musica_data
+
+@router.put("/musica/{id}", response_model=MusicaBase)
+def update_musica_id(
+    id: int,
+    musica_data_update: MusicaBase,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime = db.query(Anime).filter(Anime.id == id).first()
+    
+    if anime == None:
+        raise HTTPException(status_code=404, detail="Musica not found")
+
+    musica = Musica(
+        anime_id=anime.id,
+        musica=musica_data_update.musica
+    )
+    
+    db.add(musica)
+    db.commit()
+    db.refresh(musica)
+    
+    return musica
+
+@router.delete("/musica/{id}")
+def delete_musica_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    musica = db.query(Musica).filter(Musica.anime_id == id).all()
+    
+    if len(musica) == 0:
+        raise HTTPException(status_code=404, detail="Musica not found")
+    
+    for musica_dev in musica:
+        db.delete(musica_dev)
+    db.commit()
+    
+    return { "message": "Musica deleted"}
+
+@router.delete("/musica_id/{id}")
+def delete_musica_id_id(
+    id: int,
+    musica: str,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime = db.query(Anime).filter(Anime.id == id).first()
+    
+    if anime == None:
+        raise HTTPException(status_code=404, detail="Musica not found")
+
+    musica = db.query(Musica).filter(Musica.anime_id == id, Musica.musica == musica).first()
+    
+    if musica == None:
+        raise HTTPException(status_code=404, detail="Musica not found")
+    
+    db.delete(musica)
+    db.commit()
+
+    musica_all = db.query(Musica).filter(Musica.anime_id == id).all()
+    
+    return musica_all
+
+############################################################################
+
+@router.get("/musica_wiki/{id}")
+def musica_wiki_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    musica_wiki_data = db.query(MusicaWiki).filter(MusicaWiki.anime_id == id).all()
+    
+    if len(musica_wiki_data) == 0:
+        raise HTTPException(status_code=404, detail="MusicaWiki not found")
+    
+    return musica_wiki_data
+
+@router.put("/musica_wiki/{id}", response_model=MusicaWikiBase)
+def update_musica_wiki_id(
+    id: int,
+    musica_wiki_data_update: MusicaWikiBase,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime = db.query(Anime).filter(Anime.id == id).first()
+    
+    if anime == None:
+        raise HTTPException(status_code=404, detail="MusicaWiki not found")
+
+    musica_wiki = MusicaWiki(
+        anime_id=anime.id,
+        musica_wiki=musica_wiki_data_update.musica_wiki
+    )
+    
+    db.add(musica_wiki)
+    db.commit()
+    db.refresh(musica_wiki)
+    
+    return musica_wiki
+
+@router.delete("/musica_wiki/{id}")
+def delete_musica_wiki_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    musica_wiki = db.query(MusicaWiki).filter(MusicaWiki.anime_id == id).all()
+    
+    if len(musica_wiki) == 0:
+        raise HTTPException(status_code=404, detail="MusicaWiki not found")
+    
+    for musica_wiki_dev in musica_wiki:
+        db.delete(musica_wiki_dev)
+    db.commit()
+    
+    return { "message": "MusicaWiki deleted"}
+
+@router.delete("/musica_wiki_id/{id}")
+def delete_musica_wiki_id_id(
+    id: int,
+    musica_wiki: str,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime = db.query(Anime).filter(Anime.id == id).first()
+    
+    if anime == None:
+        raise HTTPException(status_code=404, detail="MusicaWiki not found")
+
+    musica_wiki = db.query(MusicaWiki).filter(MusicaWiki.anime_id == id, MusicaWiki.musica_wiki == musica_wiki).first()
+    
+    if musica_wiki == None:
+        raise HTTPException(status_code=404, detail="MusicaWiki not found")
+    
+    db.delete(musica_wiki)
+    db.commit()
+
+    musica_wiki_all = db.query(MusicaWiki).filter(MusicaWiki.anime_id == id).all()
+    
+    return musica_wiki_all

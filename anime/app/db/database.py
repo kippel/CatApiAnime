@@ -10,7 +10,7 @@ if SQLITE:
 else:
     DATABASE = os.getenv("DATABASE_URL", "sqlite:///sql_app.db")
 
-print(DATABASE) 
+ 
 
 DATABASE_URL = os.getenv("DATABASE_URL", DATABASE)
 # Exemple PostgreSQL:
