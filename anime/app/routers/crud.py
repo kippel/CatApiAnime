@@ -17,7 +17,8 @@ from app.world.crud_anime import CrudAnime, ASeries
 from app.schemas import (
     AnimeCreateBase, 
     SeriesBase,
-    DateBase
+    DateBase,
+    PaisBase
 )
 
 
@@ -275,3 +276,77 @@ def delete_date_id_id(
     return anime_date_all
 
 ############################################################################
+
+@router.get("/pais/{id}")
+def pais_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime_data = db.query(Pais).filter(Pais.anime_id == id).all()
+    
+    if len(anime_data) == 0:
+        raise HTTPException(status_code=404, detail="Anime not found")
+    
+    return anime_data
+
+@router.put("/pais/{id}", response_model=PaisBase)
+def update_pais_id(
+    id: int,
+    pais_data_update: PaisBase,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime = db.query(Anime).filter(Anime.id == id).first()
+    
+    if anime == None:
+        raise HTTPException(status_code=404, detail="Anime not found")
+
+    anime_pais = Pais(
+        anime_id=anime.id,
+        pais=pais_data_update.pais
+    )
+    
+    db.add(anime_pais)
+    db.commit()
+    db.refresh(anime_pais)
+    
+    return anime_pais
+
+@router.delete("/pais/{id}")
+def delete_pais_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime_pais = db.query(Pais).filter(Pais.anime_id == id).all()
+    
+    if len(anime_pais) == 0:
+        raise HTTPException(status_code=404, detail="Anime not found")
+    
+    for anime in anime_pais:
+        db.delete(anime)
+    db.commit()
+    
+    return { "message": "Pais deleted"}
+
+@router.delete("/pais_id/{id}")
+def delete_pais_id_id(
+    id: int,
+    pais: str,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime = db.query(Anime).filter(Anime.id == id).first()
+    
+    if anime == None:
+        raise HTTPException(status_code=404, detail="Anime not found")
+
+    anime_pais = db.query(Pais).filter(Pais.anime_id == id, Pais.pais == pais).first()
+    
+    if anime_pais == None:
+        raise HTTPException(status_code=404, detail="Anime not found")
+    
+    db.delete(anime_pais)
+    db.commit()
+
+    anime_pais_all = db.query(Pais).filter(Pais.anime_id == id).all()
+    
+    return anime_pais_all
+

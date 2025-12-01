@@ -38,3 +38,8 @@ class SeriesBase(BaseModel):
 
 class DateBase(BaseModel):
     date: str = Form("")
+
+
+class PaisBase(BaseModel):
+    pais: str = Form("")
+    
