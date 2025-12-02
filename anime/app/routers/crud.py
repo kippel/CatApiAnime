@@ -12,7 +12,8 @@ from app.db.models import (
     Pais, 
     AnimeDate,
     Musica,
-    MusicaWiki
+    MusicaWiki,
+    Wiki
 )
 from typing import Optional
 from app.world.crud_anime import CrudAnime, ASeries
@@ -22,7 +23,8 @@ from app.schemas import (
     DateBase,
     PaisBase,
     MusicaBase,
-    MusicaWikiBase
+    MusicaWikiBase,
+    WikiBase
 )
 
 
@@ -504,3 +506,79 @@ def delete_musica_wiki_id_id(
     musica_wiki_all = db.query(MusicaWiki).filter(MusicaWiki.anime_id == id).all()
     
     return musica_wiki_all
+
+############################################################################
+
+@router.get("/wiki/{id}")
+def wiki_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    wiki_data = db.query(Wiki).filter(Wiki.anime_id == id).all()
+    
+    if len(wiki_data) == 0:
+        raise HTTPException(status_code=404, detail="Wiki not found")
+    
+    return wiki_data
+
+@router.put("/wiki/{id}", response_model=WikiBase)
+def update_wiki_id(
+    id: int,
+    wiki_data_update: WikiBase,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime = db.query(Anime).filter(Anime.id == id).first()
+    
+    if anime == None:
+        raise HTTPException(status_code=404, detail="Wiki not found")
+
+    wiki = Wiki(
+        anime_id=anime.id,
+        wiki=wiki_data_update.wiki
+    )
+    
+    db.add(wiki)
+    db.commit()
+    db.refresh(wiki)
+    
+    return wiki
+
+
+@router.delete("/wiki/{id}")
+def delete_wiki_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    wiki = db.query(Wiki).filter(Wiki.anime_id == id).all()
+    
+    if len(wiki) == 0:
+        raise HTTPException(status_code=404, detail="Wiki not found")
+    
+    for wiki_dev in wiki:
+        db.delete(wiki_dev)
+    db.commit()
+    
+    return { "message": "Wiki deleted"}
+
+@router.delete("/wiki_id/{id}")
+def delete_wiki_id(
+    id: int,
+    wiki: str,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime = db.query(Anime).filter(Anime.id == id).first()
+    
+    if anime == None:
+        raise HTTPException(status_code=404, detail="Wiki not found")
+
+    wiki = db.query(Wiki).filter(Wiki.anime_id == id, Wiki.wiki == wiki).first()
+    
+    if wiki == None:
+        raise HTTPException(status_code=404, detail="Wiki not found")
+    
+    db.delete(wiki)
+    db.commit()
+
+    wiki_all = db.query(Wiki).filter(Wiki.anime_id == id).all()
+    
+    return wiki_all

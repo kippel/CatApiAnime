@@ -47,3 +47,6 @@ class MusicaBase(BaseModel):
 class MusicaWikiBase(BaseModel):
     musica_wiki: str = Form("")
     
+class WikiBase(BaseModel):
+    wiki: str = Form("")
+
