@@ -47,6 +47,18 @@ class MusicaBase(BaseModel):
 class MusicaWikiBase(BaseModel):
     musica_wiki: str = Form("")
     
+
 class WikiBase(BaseModel):
     wiki: str = Form("")
+
+
+class ParaulaBase(BaseModel):
+    id: int = Form(...)
+    paraula: str = Form("")
+    volumes: int = Form(...)
+
+class ParaulaAnimeBase(BaseModel):
+    anime: str = Form("")
+    paraula: str = Form("")
+
 

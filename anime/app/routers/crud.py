@@ -13,7 +13,9 @@ from app.db.models import (
     AnimeDate,
     Musica,
     MusicaWiki,
-    Wiki
+    Wiki,
+    Paraula,
+    AnimeParaula
 )
 from typing import Optional
 from app.world.crud_anime import CrudAnime, ASeries
@@ -24,7 +26,10 @@ from app.schemas import (
     PaisBase,
     MusicaBase,
     MusicaWikiBase,
-    WikiBase
+    WikiBase,
+    ParaulaBase,
+    ParaulaAnimeBase,
+    
 )
 
 
@@ -95,13 +100,14 @@ async def create(
 
     return anime_run
 
+'''
 @router.post("/paraula/{id}")
 async def create_director_id(
     id: int,
     volumes: int = Form(...),
     db: db_dependency = Annotated # type: ignore)
 ):
-
+    
     anime_data = db.query(Paraula).filter(Paraula.anime_id == id).first()
     
     if anime_data == None:
@@ -113,7 +119,7 @@ async def create_director_id(
     db.refresh(anime_data)
 
     return anime_data
-
+'''
 @router.get("/anime/{id}")
 def update_anime_id(
     id: int,
@@ -582,3 +588,168 @@ def delete_wiki_id(
     wiki_all = db.query(Wiki).filter(Wiki.anime_id == id).all()
     
     return wiki_all
+
+############################################################################
+
+@router.get("/paraula/{id}")
+def paraula_id(
+    db: db_dependency = Annotated # type: ignore)
+):
+    """
+    Retorna totes les paraules d'un anime
+    {
+        "paraula": "Bola de drac",
+        "volumes": 153
+    }
+    """
+    paraula_data = db.query(Paraula).all()
+    
+    if len(paraula_data) == 0:
+        raise HTTPException(status_code=404, detail="Paraula not found")
+    
+    return paraula_data
+
+
+@router.post("/paraula")
+def create_paraula(
+    paraula_data:ParaulaBase,
+    db: db_dependency = Annotated # type: ignore)
+):
+
+
+    paraula = db.query(Paraula).filter(Paraula.id == paraula_data.id).first()
+    
+    if paraula != None:
+        raise HTTPException(status_code=404, detail="Paraula already exists")
+
+    paraula = Paraula(
+        id=paraula_data.id,
+        paraula=paraula_data.paraula,
+        volumes=paraula_data.volumes
+    )
+    db.add(paraula)
+    db.commit()
+    db.refresh(paraula)
+    
+    return paraula
+
+
+
+@router.put("/paraula_id")
+def update_paraula_id(
+    paraula_data_update:ParaulaBase,
+    db: db_dependency = Annotated # type: ignore)
+):
+    paraula = db.query(Paraula).filter(Paraula.id == paraula_data_update.id).first()
+           
+    if paraula == None:
+        raise HTTPException(status_code=404, detail="Paraula not found")
+    
+    paraula.paraula = paraula_data_update.paraula
+    paraula.volumes = paraula_data_update.volumes
+    
+    db.add(paraula)
+    db.commit()
+    db.refresh(paraula)
+    
+    return paraula
+
+
+
+
+
+@router.get("/anime_paraula/{id}")
+def anime_paraula_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime_paraula_data = db.query(AnimeParaula).filter(AnimeParaula.paraula_id == id).all()
+    
+    if len(anime_paraula_data) == 0:
+        raise HTTPException(status_code=404, detail="AnimeParaula not found")
+    
+    anime_paraula_list = []
+    for anime_paraula in anime_paraula_data:
+
+        anime = db.query(Anime).filter(Anime.id == anime_paraula.anime_id).first()
+
+        anime_dict = {
+            "id": anime.id,
+            "titol": anime.titol,
+            "paraula id" : anime_paraula.id   
+        }
+        
+        anime_paraula_list.append(anime_dict)
+    
+    return anime_paraula_list
+
+
+@router.post("/anime_paraula")
+def create_anime_paraula(
+    paraula_anime: ParaulaAnimeBase,
+    db: db_dependency = Annotated # type: ignore)
+):
+
+
+    anime = db.query(Anime).filter(Anime.titol == paraula_anime.anime).first()
+    
+    if anime == None:
+        raise HTTPException(status_code=404, detail="Anime not found")
+
+    paraula = db.query(Paraula).filter(Paraula.paraula == paraula_anime.paraula).first()
+    if paraula == None:
+        raise HTTPException(status_code=404, detail="Paraula not found")
+
+    anime_paraula = db.query(AnimeParaula).filter(AnimeParaula.anime_id == anime.id, AnimeParaula.paraula_id == paraula.id).first()
+    
+    if anime_paraula != None:
+        raise HTTPException(status_code=404, detail="AnimeParaula already exists")
+
+    anime_paraula = AnimeParaula(
+        anime_id=anime.id,
+        paraula_id=paraula.id
+    )
+    db.add(anime_paraula)
+    db.commit()
+    db.refresh(anime_paraula)
+    
+    return anime_paraula
+
+
+@router.delete("/anime_paraula/{id}")
+def anime_paraula_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+    anime_paraula = db.query(AnimeParaula).filter(AnimeParaula.anime_id == id).first()
+    
+    if anime_paraula == None:
+        raise HTTPException(status_code=404, detail="AnimeParaula not found")
+    
+    db.delete(anime_paraula)
+    db.commit()
+    
+    return { "message": "AnimeParaula deleted"}
+
+
+@router.delete("/anime_paraula_id/{id}")
+def anime_paraula_id_id(
+    id: int,
+    db: db_dependency = Annotated # type: ignore)
+):
+
+    paraula = db.query(Paraula).filter(Paraula.id == id).first()    
+    if paraula == None:
+        raise HTTPException(status_code=404, detail="Paraula not found")
+
+    anime_paraula = db.query(AnimeParaula).filter(AnimeParaula.paraula_id == id).all()
+    
+    for anime_paraula_dev in anime_paraula:
+        db.delete(anime_paraula_dev)
+    db.commit()
+
+    db.delete(paraula)
+    db.commit()
+    
+    return { "message": "Paraula deleted"}
+    
