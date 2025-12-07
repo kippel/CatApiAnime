@@ -1,0 +1,27 @@
+services:
+  anime:
+    build: ./anime
+    ports:
+      - "4000:4000"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017
+    depends_on:
+      - mongo
+    develop:
+      watch:
+        - action: sync
+          path: ./anime/app
+          target: /app/app
+          ignore:
+            - __pycache__/
+            - .venv/
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
