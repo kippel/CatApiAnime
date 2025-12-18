@@ -7,23 +7,12 @@ from app.routers import (
     animes, 
     create, 
     update,
-    delete
+    delete,
+    json_data
 )
 
 
 app = FastAPI()
-
-@app.get("/")
-async def read_root():
-
-    users = db.users.find()    
-
-    async for user in users:
-        print(user)
-    return {"Hello": "World"}
-
-
-    
 
 api_router = APIRouter(prefix="/api")
 
@@ -33,5 +22,6 @@ api_router.include_router(animes.router)
 api_router.include_router(create.router)
 api_router.include_router(update.router)
 api_router.include_router(delete.router)
+api_router.include_router(json_data.router)
 
 app.include_router(api_router)
