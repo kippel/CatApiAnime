@@ -8,15 +8,7 @@ services:
     depends_on:
       - mongo
     volumes:
-      - anime_data:/app/data
-    develop:
-      watch:
-        - action: sync
-          path: ./anime/app
-          target: /app/app
-          ignore:
-            - __pycache__/
-            - .venv/
+      - ./anime:/app
 
   mongo:
     image: mongo:latest
@@ -27,4 +19,5 @@ services:
 
 volumes:
   mongo_data:
-  anime_data:
+
+

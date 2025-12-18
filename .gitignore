@@ -1,4 +1,5 @@
-
-
 anime/app/.venv
 anime/app/__pycache__/*
+anime/app/db/__pycache__/*
+anime/app/routers/__pycache__/*
+anime/app/workouts/__pycache__/*
