@@ -1,4 +1,8 @@
 ## Catala Api Anime
 
 
-sudo docker compose up --build
+```bash
+docker compose up --build
+
+docker compose exec anime uv run pytest -v
+```

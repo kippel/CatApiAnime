@@ -3,3 +3,4 @@ anime/app/__pycache__/*
 anime/app/db/__pycache__/*
 anime/app/routers/__pycache__/*
 anime/app/workouts/__pycache__/*
+anime/test/__pycache__/*

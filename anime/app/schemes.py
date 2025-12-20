@@ -28,9 +28,9 @@ class TipusEnum(str, enum.Enum):
 }
 """
 class Anime(BaseModel):
-    titol: str = Field(..., example="")
-    descripcio: str = Field("", example="")
-    primer_episodi: str = Field("", example="")
+    titol: str = Field(..., json_schema_extra={"example": ""})
+    descripcio: str = Field("", json_schema_extra={"example": ""})
+    primer_episodi: str = Field("", json_schema_extra={"example": ""})
     date: list[str] = []
     director: list[str] = []
     generes: list[str] = []
@@ -63,10 +63,10 @@ class AnimePellicula(Anime):
 """
 class AnimeSeries(Anime):
     tipus: Literal["Series"] = "Series"
-    durada_dels_capiols: str = Field("", example="")
-    ultim_episodis: str = Field("", example="")
-    temporades: int = Field(0, example=0)
-    episodis: int = Field(0, example=0)
+    durada_dels_capiols: str = Field("", json_schema_extra={"example": ""})
+    ultim_episodis: str = Field("", json_schema_extra={"example": ""})
+    temporades: int = Field(0, json_schema_extra={"example": 0})
+    episodis: int = Field(0, json_schema_extra={"example": 0})
 
 
 """
@@ -79,6 +79,6 @@ class AnimeSeries(Anime):
 """
 class AnimeOVA(Anime):
     tipus: Literal["OVA"] = "OVA"
-    durada_dels_capiols: str = Field("", example="")
-    ultim_episodis: str = Field("", example="")
-    episodis: int = Field(0, example=0)
+    durada_dels_capiols: str = Field("", json_schema_extra={"example": ""})
+    ultim_episodis: str = Field("", json_schema_extra={"example": ""})
+    episodis: int = Field(0, json_schema_extra={"example": 0})
