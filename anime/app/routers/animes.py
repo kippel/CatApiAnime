@@ -46,6 +46,17 @@ async def paraula(db: db_dependency, paraula: str):
     return animes_list
     
 
+@router.get("/titol/{titol}")
+async def titol(db: db_dependency, titol: str):
+    
+    animes = await db.animes.find_one({"titol": titol})
 
+    if animes is None:
+        raise HTTPException(status_code=404, detail="Anime not found")
+
+    animes_list = serializes(animes)
+    
+    return animes_list        
+    
 
 
